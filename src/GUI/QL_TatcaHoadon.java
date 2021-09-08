@@ -174,21 +174,21 @@ public class QL_TatcaHoadon extends JPanel {
             }
         });
 
-        dp1=new DatePicker();
+        if(QL_Thongke.dp1==null)QL_Thongke.dp1=new DatePicker();
         QL_Thongke.txtDate1.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e){
                 QL_Thongke.z=0;
-                dp1.setVisible(true);
-                dp1.setLocation(300, 590);
+                QL_Thongke.dp1.setVisible(true);
+                QL_Thongke.dp1.setLocation(300, 590);
             }
         });
         QL_Thongke.txtDate2.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e){
                 QL_Thongke.z=1;
-                dp1.setVisible(true);
-                dp1.setLocation(300, 590);
+                QL_Thongke.dp1.setVisible(true);
+                QL_Thongke.dp1.setLocation(300, 590);
             }
         });
         cmbOrder.addActionListener (new ActionListener() {
@@ -360,7 +360,7 @@ public class QL_TatcaHoadon extends JPanel {
     private JPanel pnSpace=new JPanel();
     private JLabel lbDate=new LabelCustom("Thời gian từ ");
     private JLabel lbDate1=new LabelCustom(" đến ");
-    public static DatePicker dp1;
+//    public static DatePicker QL_Thongke.dp1;
     private JComboBox<String> cmbOrder =new JComboBox<String>(new String[]{
             "Tổng tiền, tăng dần",
             "Tổng tiền, giảm dần",

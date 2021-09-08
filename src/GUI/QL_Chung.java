@@ -121,7 +121,7 @@ public class QL_Chung extends JFrame {
                 @Override
                 public void mousePressed(MouseEvent e) {
                     dispose();
-                  if(QL_TatcaHoadon.dp1!=null) QL_TatcaHoadon.dp1.dispose();
+                  if(QL_Thongke.dp1!=null) QL_Thongke.dp1.dispose();
                     try {
                         new Dangnhap();
                     } catch (IOException ioException) {

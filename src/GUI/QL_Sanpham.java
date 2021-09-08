@@ -24,7 +24,10 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 public class QL_Sanpham extends JPanel{
     private GridBagLayout gblayout = new GridBagLayout();
@@ -33,10 +36,22 @@ public class QL_Sanpham extends JPanel{
     private SanphamBLL sanphamBLL=new SanphamBLL();
     private DanhmucDAL danhmucDAL=new DanhmucDAL();
     private DanhmucBLL danhmucBLL=new DanhmucBLL();
-    private DefaultTableModel modelSP = new DefaultTableModel();
-    private DefaultTableModel modelDM = new DefaultTableModel();
+    private DefaultTableModel modelSP = new DefaultTableModel(){
+        public boolean isCellEditable(int row, int column) {
+            //all cells false
+            return false;
+        }
+    };
+    private DefaultTableModel modelDM = new DefaultTableModel(){
+        public boolean isCellEditable(int row, int column) {
+            //all cells false
+            return false;
+        }
+    };
+    private int indexdelundo=-1;
+    private int indextableundo =-1;
     private int index='\0';
-    private int checkundo='\0';
+    private int checkundo=0;
     private int checkundo1='\0';
     private int check=0;
     private int checksearch=0;
@@ -46,6 +61,8 @@ public class QL_Sanpham extends JPanel{
     public static ArrayList<SanphamDTO> listSP=new ArrayList<>();
     public static ArrayList<DanhmucDTO> listDM=new ArrayList<>();
     private ArrayList<SanphamDTO> listsearchsp=new ArrayList<>();
+    private Locale localeVN = new Locale("vi", "VN");
+    private NumberFormat currencyVN = NumberFormat.getCurrencyInstance(localeVN);
     private int[] columnspWidth = {
             80, 100, 690, 80, 100, 300, 150
     };
@@ -56,12 +73,12 @@ public class QL_Sanpham extends JPanel{
         setBackground(new Color(245, 245, 245));
         listDM=new ArrayList<>();
         if (listDM.size() == 0) danhmucBLL.getListDanhmuc();
-
+        if (listSP.size() == 0) sanphamBLL.getListSanpham();
         initComponents();
     }
     public void addRow(SanphamDTO s, int i, DefaultTableModel model) {
         model.insertRow(i++, new Object[]{
-                i++, s.getMasp(), s.getTensp(), s.getMaloai(), s.getSoluong(), s.getDongia(), s.getMancc()
+                i++, s.getMasp(), s.getTensp(), s.getMaloai(), s.getSoluong(), currencyVN.format(s.getDongia())
         });
     }
     public void addRowDM(DanhmucDTO s, int i, DefaultTableModel model) {
@@ -78,15 +95,14 @@ public class QL_Sanpham extends JPanel{
         model.setValueAt(s.getTensp(),index,2);
         model.setValueAt(s.getMaloai(),index,3);
         model.setValueAt(s.getSoluong(),index,4);
-        model.setValueAt(s.getDongia(),index,5);
-        model.setValueAt(s.getMancc(),index,6);
+        model.setValueAt(currencyVN.format(s.getDongia()),index,5);
     }
 
     public void showTableSP(DefaultTableModel model, ArrayList<SanphamDTO> list ) {
         int i = 1;
         for (SanphamDTO s : list) {
            model.addRow(new Object[]{
-                    i++, s.getMasp(), s.getTensp(), s.getMaloai(), s.getSoluong(), s.getDongia(), s.getMancc()
+                    i++, s.getMasp(), s.getTensp(), s.getMaloai(), s.getSoluong(), currencyVN.format(s.getDongia())
             });
         }
     }
@@ -100,7 +116,8 @@ public class QL_Sanpham extends JPanel{
     }
 
     private void initComponents() throws IOException, URISyntaxException {
-        listSP=new ArrayList<>();
+        if (listSP.size()==0) sanphamBLL.getListSanpham();
+        listsearchsp=listSP;
         gbc.fill = 1;
         gbc.insets = (new Insets(-10, 0, 20, 30));
 
@@ -110,11 +127,10 @@ public class QL_Sanpham extends JPanel{
         tblDSSP.setModel(modelSP);
         modelSP.setColumnIdentifiers(new Object[]{
                 "STT", "ID", "Name", "Kind","Amount" ,"Price",
-                "Supply"
         });
         int i = 0;
         columnspWidth = new int[]{
-                50, 70, 570, 70, 70, 200, 70
+                50, 90, 580, 90, 90, 200
         };
         for (int width : columnspWidth) {
             TableColumn column = tblDSSP.getColumnModel().getColumn(i++);
@@ -126,9 +142,7 @@ public class QL_Sanpham extends JPanel{
         tblDSSP.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
                 SanphamDTO sp=new SanphamDTO();
-                if(checksearch==0)
-                { sp= listSP.get(tblDSSP.getSelectedRow());}
-                else
+
                 { sp= listsearchsp.get(tblDSSP.getSelectedRow());}
                 try {
                     showInputSP(sp);
@@ -168,28 +182,32 @@ public class QL_Sanpham extends JPanel{
         // button của sản phẩm
         btnAdd.addActionListener(evt -> {
             try {
-                btnAddActionPerformed(evt);
+//                btnAddActionPerformed(evt);
+                btnAddAction(evt);
+
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
         });
-        btnUpdate.addActionListener(this::btnUpdateActionPerformed);
-        btnDel.addActionListener(this::btnDelActionPerformed);
+        btnUpdate.addActionListener(evt1 -> {
+            try {
+                btnEditAction(evt1);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        });
+        btnDel.addActionListener(this::btnDelAction);
         btnRead.addActionListener(this::btnReadActionPerformed);
         btnRetype.addActionListener(this::btnRetypeActionPerformed);
         btnUndo.addActionListener(evt -> {
+            //                btnUndoActionPerformed(evt);
             try {
-                btnUndoActionPerformed(evt);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (URISyntaxException e) {
+                btnUndoAction(evt);
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         });
         btnSearch.addActionListener((this::btnSearchActionPerformed));
-        btnNcc.addActionListener(this::btnNccActionPerformed);
         btnUploadImg.addActionListener(actionEvent -> {
             try {
                 btnUploadImg(actionEvent);
@@ -217,35 +235,27 @@ public class QL_Sanpham extends JPanel{
         pnCtnCSp = new JPanel(gblayout);
         {
             gbc.gridy = 0;
-            gbc.gridwidth = 1;gbc.gridx = 0;pnCtnCSp.add(lbMasp, gbc);
-            gbc.gridwidth = 2;gbc.gridx = 1;pnCtnCSp.add(txtMasp, gbc);
-            gbc.gridwidth = 1;gbc.gridx = 3;pnCtnCSp.add(lbTensp, gbc);
-            gbc.gridwidth = 2;gbc.gridx = 4;pnCtnCSp.add(txtTensp, gbc);
+            gbc.gridwidth = 1;gbc.gridx = 0;pnCtnCSp.add(lbTensp, gbc);
+            gbc.gridwidth = 2;gbc.gridx = 1;pnCtnCSp.add(txtTensp, gbc);
+            gbc.gridwidth = 1;gbc.gridx = 3;pnCtnCSp.add(lbMaloai, gbc);
+            gbc.gridwidth = 2;gbc.gridx = 4;pnCtnCSp.add(txtMaloai, gbc);
+
 
             gbc.gridy = 1;
-            gbc.gridwidth = 2;gbc.gridx = 1;pnCtnCSp.add(lbMaspE, gbc);
-            gbc.gridwidth = 2;gbc.gridx = 4;pnCtnCSp.add(lbTenspE, gbc);
+            gbc.gridwidth = 2;gbc.gridx = 1;pnCtnCSp.add(lbTenspE, gbc);
+            gbc.gridwidth = 2;gbc.gridx = 4;pnCtnCSp.add(lbMaloaiE, gbc);
 
             gbc.gridy = 2;
-            gbc.gridwidth = 1;gbc.gridx = 0;pnCtnCSp.add(lbMaloai, gbc);
-            gbc.gridwidth = 2;gbc.gridx = 1;pnCtnCSp.add(txtMaloai, gbc);
-            gbc.gridwidth = 1;gbc.gridx = 3;pnCtnCSp.add(lbMancc, gbc);
-            gbc.gridwidth = 2;gbc.gridx = 4;pnCtnCSp.add(txtMancc, gbc);
-            gbc.gridwidth = 1;gbc.gridx = 7;pnCtnCSp.add(btnNcc, gbc);
-            gbc.gridy = 3;
-            gbc.gridwidth = 2;gbc.gridx = 1;pnCtnCSp.add(lbMaloaiE, gbc);
-            gbc.gridwidth = 2;gbc.gridx = 4;pnCtnCSp.add(lbManccE, gbc);
-
-            gbc.gridy = 4;
             gbc.gridwidth = 1;gbc.gridx = 0;pnCtnCSp.add(lbDongia, gbc);
             gbc.gridwidth = 2;gbc.gridx = 1;pnCtnCSp.add(txtDongia, gbc);
             gbc.gridwidth = 1;gbc.gridx = 3;pnCtnCSp.add(lbSoluong, gbc);
             gbc.gridwidth = 2;gbc.gridx = 4;pnCtnCSp.add(txtSoluong, gbc);
 
-            gbc.gridy = 5;
+            gbc.gridy = 3;
             gbc.gridwidth = 2;gbc.gridx = 1;pnCtnCSp.add(lbDongiaE, gbc);
             gbc.gridwidth = 2;gbc.gridx = 4;pnCtnCSp.add(lbSoluongE, gbc);
-            gbc.gridy = 6;
+            gbc.gridy = 4;
+
             gbc.gridwidth = 1;gbc.gridx = 0;pnCtnCSp.add(lbSearchPrice, gbc);
             gbc.gridwidth = 2;gbc.gridx = 1;pnCtnCSp.add(txtSearchPrice, gbc);
             gbc.gridwidth = 1;gbc.gridx = 3;pnCtnCSp.add(lbSearchQuantity, gbc);
@@ -305,16 +315,236 @@ public class QL_Sanpham extends JPanel{
             lbTitle.setForeground(new Color(54, 38, 90));
             lbTitle.setFont(new Font("Segoe UI", 1, 30));
             tblDSSP.setFont(new Font("Segoe UI", 0, 16));
-            txtMasp.setEditable(false);
-            txtMancc.setEditable(false);
+            txtTensp.setColumns(25);
+
             txtMaloai.setEditable(false);
             txtMaDM.setEditable(false);
             pnImg.setBackground(NewColor.background);
         }
     }
 
+    private void btnDelAction(ActionEvent actionEvent) {
+        if (listsearchsp.size() == 0) {
+            sanphamBLL.getListSanpham();
+            listsearchsp = listSP;
+            showTableSP(modelSP, listsearchsp);
+        }
+        int i = tblDSSP.getSelectedRow();
+        if (i == -1) {
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn một sản phẩm để xóa!");
+        } else {
+            SanphamDTO s = listsearchsp.get(i);
+            if (!refresh(txtTensp.getText()).toLowerCase().equals(s.getTensp().toLowerCase())
+                    || Integer.parseInt(txtMaloai.getText()) != s.getMaloai()
+                    || Integer.parseInt(txtSoluong.getText()) != s.getSoluong()
+                    || Long.parseLong(txtDongia.getText()) != s.getDongia() ) {
+                JOptionPane.showMessageDialog(null, "Vui lòng trùng khớp thông tin để xóa!");
+            }
+            else {
+                sptemp = s;
+                indexdelundo=getIndexSP(listSP,sptemp.getMasp());
+                sanphamBLL.delSanpham(sptemp.getMasp(), getIndexSP(listSP, sptemp.getMasp()));
+//                System.out.println(listsearchsp.size());
+                listsearchsp.remove(i);
+                modelSP.removeRow(i);
+                indextableundo=i;
+
+                for (int j = index; j < modelSP.getRowCount(); j++) {
+                    modelSP.setValueAt(j + 1, j, 0);
+                }
+                JOptionPane.showMessageDialog(null, "Xóa thành công!");
+                checkundo = 2;
+                retype();
+            }
+        }
+    }
+//            ArrayList<SanphamDTO> listt=new ArrayList<>();
+//            if(checksearch==0) listt=QL_Sanpham.listSP;
+//            else listt=listsearchsp;
+//            index=tblDSSP.getSelectedRow();
+//            sptemp= listt.get(index);
+//            int res = JOptionPane.showConfirmDialog(null, "Are you sure?", "Message", JOptionPane.YES_NO_OPTION);
+//            if (res == JOptionPane.YES_OPTION) {
+//                if (sanphamBLL.delSanpham(index)) {
+//                    modelSP.removeRow(index);
+//                    for (int j = index; j < modelSP.getRowCount(); j++) {
+//                        modelSP.setValueAt(j + 1, j, 0);
+//                    }
+//                    checkundo = 1;
+//                } else
+//                    JOptionPane.showMessageDialog(this, "Xóa không thành công.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+//            }
+
+//    }
+
+    private void btnUndoAction(ActionEvent evt) throws SQLException {
+        if(checkundo==0){
+            JOptionPane.showMessageDialog(null,"Không thể hoàn tác!");
+        }else {
+            int i=getIndexSP(listSP,sptemp.getMasp());
+            int j=getIndexSP(listsearchsp,sptemp.getMasp());
+            if(checkundo==1){
+                sanphamBLL.updateSanpham(sptemp,i);
+                listsearchsp.set(j, sptemp);
+                setRow(modelSP,sptemp,j);
+            }else {
+                if(checkundo==2){
+                    sanphamBLL.addSanphamUndo(sptemp,indexdelundo);
+                    listsearchsp.add(indextableundo, sptemp);
+                    addRow(sptemp,indexdelundo,modelSP);
+                }
+            }
+            JOptionPane.showMessageDialog(null,"Hoàn tác từ thành công");
+
+        }
+        checkundo=0;
+    }
+
+    private String refresh(String s) {
+        s = s.trim();
+        s = s.replaceAll("\\s+", " ");
+        return s;
+    }
+    private void btnAddAction(ActionEvent evt) throws SQLException {
+        if(listsearchsp.size()==0) {
+            sanphamBLL.getListSanpham();
+            listsearchsp=listSP;
+            showTableSP(modelSP,listsearchsp);
+        }
+
+        if(checkTextfiledAdd()){
+            SanphamDTO sp = getInputSP();
+            sanphamBLL.addSanpham(sp);
+            listsearchsp=listSP;
+            modelSP.setNumRows(0);
+            showTableSP(modelSP,listsearchsp);
+            JOptionPane.showMessageDialog(null, "Thêm thành công!");
+            retype();
+        }
+    }
+    private void btnEditAction(ActionEvent evt) throws SQLException {
+        if(listsearchsp.size()==0) {
+            sanphamBLL.getListSanpham();
+            listsearchsp=listSP;
+            showTableSP(modelSP,listsearchsp);
+        }
+        if(checkTextfiledUpdate()){
+            int index=tblDSSP.getSelectedRow();
+            sptemp=listsearchsp.get(index);
+            SanphamDTO sp = getInputSP();
+            sanphamBLL.updateSanpham(sp,getIndexSP(listSP,sp.getMasp()));
+            listsearchsp.set(index, sp);
+            setRow(modelSP,sp,index);
+//            listsearchsp=listSP;
+//            modelSP.setNumRows(0);
+//            showTableSP(modelSP,listsearchsp);
+            JOptionPane.showMessageDialog(null, "Sửa thành công!");
+            checkundo=1;
+            retype();
+        }
+    }
+    private int getIndexSP(ArrayList<SanphamDTO> list,int masp){
+        int i=-1;
+        for (SanphamDTO s: list) {
+            i++;
+            if(s.getMasp()==masp) return i;
+        }
+        return -1;
+    }
+    private boolean checkTextfiledAdd(){
+        if(txtTensp.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn hoặc nhập tên sản phẩm!");
+            return false;
+        }
+        else {
+            if(!checksp(refresh(txtTensp.getText()))) {
+                JOptionPane.showMessageDialog(null, "Sản phẩm đã tồn tại!");
+                return false;
+            }
+            else {
+                if (txtMaloai.getText().equals("")){
+                    JOptionPane.showMessageDialog(null, "Vui lòng chọn mã loại sản phẩm!");
+                    return false;
+                }
+                else {
+                    Pattern pattern = Pattern.compile("\\d*");
+                    if (txtDongia.getText().equals("")||!pattern.matcher(txtDongia.getText()).matches()){
+                        JOptionPane.showMessageDialog(null, "Đơn giá phải là số!");
+                        return false;
+                    }
+                    else {
+                        if (!txtSoluong.getText().equals("") && !pattern.matcher(txtSoluong.getText()).matches()) {
+                            JOptionPane.showMessageDialog(null, "Số lượng phải là số!");
+                            return false;
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    private boolean checkTextfiledUpdate(){
+        if(tblDSSP.getSelectedRow()==-1){
+            JOptionPane.showMessageDialog(null, "Vui lòng chọn 1 sản phẩm ở bảng dưới để sửa!");
+            return false;
+        }else {
+            int i=tblDSSP.getSelectedRow();
+            if(txtTensp.getText().equals("")){
+                JOptionPane.showMessageDialog(null, "Vui lòng nhập tên sản phẩm sửa!");
+                return false;
+            }else {
+                int j=getIndexSP(listSP, listsearchsp.get(i).getMasp());
+                if(!checkspUpdate(txtTensp.getText(),j)){
+                    JOptionPane.showMessageDialog(null, "Tên bạn muốn sửa trung tên với sản phẩm có sẵn!");
+                    return false;
+                }else {
+                    if (txtMaloai.getText().equals("")){
+                        JOptionPane.showMessageDialog(null, "Vui lòng chọn mã loại sản phẩm!");
+                        return false;
+                    }
+                    else {
+                        Pattern pattern = Pattern.compile("\\d*");
+                        if (txtDongia.getText().equals("")||!pattern.matcher(txtDongia.getText()).matches()){
+                            JOptionPane.showMessageDialog(null, "Đơn giá phải là số!");
+                            return false;
+                        }
+                        else {
+                            if (!txtSoluong.getText().equals("") && !pattern.matcher(txtSoluong.getText()).matches()) {
+                                JOptionPane.showMessageDialog(null, "Số lượng phải là số!");
+                                return false;
+                            }
+                            else {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    private boolean checksp(String str){
+        for (SanphamDTO s:listSP) {
+            if(str.toLowerCase().equals(refresh(s.getTensp()).toLowerCase())) return false;
+        }
+        return true;
+    }
+    private boolean checkspUpdate(String str, int index){
+        String n=listSP.get(index).getTensp();
+        if(str.equals(n)){
+            return true;
+        }
+        for (SanphamDTO s:listSP) {
+            if(str.toLowerCase().equals(refresh(s.getTensp()).toLowerCase()))
+                return false;
+        }
+        return true;
+    }
+
     private void btnUploadImg(ActionEvent actionEvent) throws IOException {
-        if(!txtMasp.getText().equals("")) {
+        if(tblDSSP.getSelectedRow()!=-1) {
+            int masp=listsearchsp.get(tblDSSP.getSelectedRow()).getMasp();
             FileDialog dialog = new FileDialog((Frame) null, "Select File to Open");
             dialog.setMode(FileDialog.LOAD);
             dialog.setLocation(100, 100);
@@ -326,8 +556,8 @@ public class QL_Sanpham extends JPanel{
                 if (!destinationFolder.exists()) {
                     destinationFolder.mkdirs();
                 }
-                copy(filesource.toString(), destinationFolder.toString() + "\\" + txtMasp.getText() + ".png");
-                img = ImageIO.read(new File(destinationFolder + "\\" + txtMasp.getText() + ".png"));
+                copy(filesource.toString(), destinationFolder.toString() + "\\" + masp + ".png");
+                img = ImageIO.read(new File(destinationFolder + "\\" + masp + ".png"));
                 lbimg.setIcon(new ImageIcon(new ImageFit().fitimage(img, 360, 360)));
             } else
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn file ảnh", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
@@ -338,90 +568,19 @@ public class QL_Sanpham extends JPanel{
         modelSP.setRowCount(0);
         if (listSP.size() == 0) {
             sanphamBLL.getListSanpham();
+            listsearchsp=listSP;
         }
-        showTableSP(modelSP, listSP);
+        showTableSP(modelSP, listsearchsp);
         checksearch=0;
     }
     private void btnRetypeActionPerformed(ActionEvent evt) {
         retype();
-    }
-    private void btnAddActionPerformed(ActionEvent evt) throws SQLException {
-        if (checkSP()) {
-            if (sanphamBLL.checkTensp(txtTensp.getText(), listSP)) {
-                SanphamDTO sanphamDTO = getInputSP();
-                if (sanphamBLL.addSanpham(sanphamDTO)) {
-                    addRow(sanphamDTO, QL_Sanpham.listSP.size() - 1, modelSP);
-                    JOptionPane.showMessageDialog(this, "Thêm dữ liệu thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                    retype();
-                } else JOptionPane.showMessageDialog(this, "Thêm không thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-            }else JOptionPane.showMessageDialog(this, "Sản phẩm đã tồn tại", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-        }
-    }
-    private void btnNccActionPerformed(ActionEvent evt){
-        while(check==0) {
-            mf = new Select_Nhacungcap();
-            check = 1;
-        }
-        mf.setVisible(true);
-        mf.setLocation(975,300);
-    }
-    private void btnUpdateActionPerformed(ActionEvent evt) {
-        ArrayList<SanphamDTO> listt=new ArrayList<>();
-        if(checksearch==0) listt=listSP;
-        else listt=listsearchsp;
-        index = tblDSSP.getSelectedRow();
-            if (checkSP()) {
-                SanphamDTO s = getInputSP();
-                sptemp = listt.get(index);
-                if (sanphamBLL.updateSanpham(s, sptemp.getMasp(), index)) {
-                    setRow(modelSP, s, index);
-                    JOptionPane.showMessageDialog(this, "Cập nhật liệu thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                    checkundo = 1;
-                } else
-                    JOptionPane.showMessageDialog(this, "Cập nhật không thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-            }
-
-    }
-    private void btnDelActionPerformed(ActionEvent evt){
-        ArrayList<SanphamDTO> listt=new ArrayList<>();
-        if(checksearch==0) listt=QL_Sanpham.listSP;
-        else listt=listsearchsp;
-        index=tblDSSP.getSelectedRow();
-        sptemp= listt.get(index);
-        int res = JOptionPane.showConfirmDialog(null, "Are you sure?", "Message", JOptionPane.YES_NO_OPTION);
-        if (res == JOptionPane.YES_OPTION) {
-            if (sanphamBLL.delSanpham(index)) {
-                modelSP.removeRow(index);
-                for (int j = index; j < modelSP.getRowCount(); j++) {
-                    modelSP.setValueAt(j + 1, j, 0);
-                }
-                checkundo = 1;
-            } else
-                JOptionPane.showMessageDialog(this, "Xóa không thành công.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-        }
-    }
-    private void btnUndoActionPerformed(ActionEvent evt) throws SQLException, IOException, URISyntaxException {
-        while(checkundo==1) {
-            if (sanphamBLL.undo(sptemp, index) == 1) {
-                setRow(modelSP, sptemp, index);
-            } else {
-                addRow(sptemp, index, modelSP);
-                for (int j = index; j < modelSP.getRowCount(); j++) {
-                    modelSP.setValueAt(j + 1, j, 0);
-                }
-            }
-            tblDSSP.setRowSelectionInterval(index,index);
-            JOptionPane.showMessageDialog(this, "Hoàn tác thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-            showInputSP(sptemp);
-            checkundo = 0;
-        }
     }
     private void btnSearchActionPerformed(ActionEvent evt){
         SanphamDTO s=getInputSP();
         listsearchsp=sanphamBLL.search(s,txtSearchPrice.getText(), txtSearchQuantity.getText());
         modelSP.setRowCount(0);
         showTableSP(modelSP, listsearchsp);
-        checksearch=1;
     }
     //thiết lập các button danh mục
     private void btnUndoDMActionPerformed(ActionEvent actionEvent) throws SQLException {
@@ -513,20 +672,15 @@ public class QL_Sanpham extends JPanel{
     private JLabel lbMaloai = new LabelCustom("Mã loại");
     private JLabel lbSoluong = new LabelCustom("Số lượng");
     private JLabel lbDongia = new LabelCustom("Đơn giá");
-    private JLabel lbMancc = new LabelCustom("Mã nhà cung cấp");
-
-    private JLabel lbMaspE = new LabelCustom(" ");
     private JLabel lbTenspE = new LabelCustom(" ");
     private JLabel lbMaloaiE = new LabelCustom(" ");
     private JLabel lbSoluongE = new LabelCustom(" ");
     private JLabel lbDongiaE = new LabelCustom(" ");
-    private JLabel lbManccE = new LabelCustom(" ");
-    private JTextField txtMasp = new TextFieldCustom("");
     private JTextField txtTensp = new TextFieldCustom("");
     private JTextField txtMaloai = new TextFieldCustom("");
     private JTextField txtSoluong = new TextFieldCustom("");
     private JTextField txtDongia = new TextFieldCustom("");
-    public static JTextField txtMancc = new TextFieldCustom("");
+
     private JTextField test=new JTextField("",15);
     private JScrollPane jScrollPaneSP;
     private JScrollPane jScrollPaneDM;
@@ -538,7 +692,6 @@ public class QL_Sanpham extends JPanel{
     private JButton btnSearch = new ButtonFunction("Tìm kiếm");
     private JButton btnRetype = new ButtonFunction("Nhập lại");
     private JButton btnRead = new ButtonFunction("Đọc từ server");
-    private JButton btnNcc = new JButton("Chọn");
     private JButton btnAddDM=new JButton("Thêm");
     private JButton btnUpdateDM =new JButton("Sửa");
     private JButton btnDelDM=new JButton("Xóa");
@@ -564,28 +717,28 @@ public class QL_Sanpham extends JPanel{
     }
     private void retype(){
         txtSearchPrice.setText("");txtSearchQuantity.setText("");
-        txtMasp.setText("");lbMaspE.setText(" ");
         txtTensp.setText("");lbTenspE.setText(" ");
         txtMaloai.setText("");lbMaloaiE.setText(" ");
-        txtMancc.setText("");lbManccE.setText(" ");
         txtDongia.setText("");lbDongiaE.setText(" ");
         txtSoluong.setText("");lbSoluongE.setText(" ");
     }
     private SanphamDTO getInputSP(){
         SanphamDTO sp=new SanphamDTO();
-        if(!txtMasp.getText().equals("")) sp.setMasp(Integer.parseInt(txtMasp.getText()));
-        sp.setTensp(txtTensp.getText());
+        int index=tblDSSP.getSelectedRow();
+        if(index!=-1) {
+            int masp=listsearchsp.get(index).getMasp();
+            sp.setMasp(masp);
+        }
+        sp.setTensp(refresh(txtTensp.getText()));
         if(!txtMaloai.getText().equals("")) sp.setMaloai(Integer.parseInt(txtMaloai.getText()));
-        if(!txtMancc.getText().equals("")) sp.setMancc(Integer.parseInt(txtMancc.getText()));
-        sp.setDongia(ck.checkMoney(txtDongia));
+        if(!txtDongia.getText().equals(""))sp.setDongia(Long.parseLong(txtDongia.getText()));
         if(!txtSoluong.getText().equals("")) sp.setSoluong(Integer.parseInt(txtSoluong.getText()));
+        else sp.setSoluong(0);
         return sp;
     }
     private void showInputSP(SanphamDTO sp) throws IOException, URISyntaxException {
-        txtMasp.setText(String.valueOf(sp.getMasp()));
         txtTensp.setText(sp.getTensp());
         txtMaloai.setText(String.valueOf(sp.getMaloai()));
-        txtMancc.setText(String.valueOf(sp.getMancc()));
         txtDongia.setText(String.valueOf(sp.getDongia()));
         txtSoluong.setText(String.valueOf(sp.getSoluong()));
         int z=0;
@@ -595,11 +748,13 @@ public class QL_Sanpham extends JPanel{
         }
         tblDSDM.setRowSelectionInterval(z,z);
 
-        URL url = getClass().getResource(sp.getAnhsp());
-        if(url==null)
+
+        File dir = new File(new File("").getAbsolutePath()+"\\src\\GUI\\"+sp.getAnhsp());
+        if(!dir.exists())
             img=ImageIO.read(this.getClass().getResource("images/sanpham/product.png"));
         else{
-            img = ImageIO.read(new File(url.getPath()));
+            URL url = getClass().getResource(sp.getAnhsp());
+            img = ImageIO.read(dir);
         }
         lbimg.setIcon(new ImageIcon(new ImageFit().fitimage(img, 360, 360)));
 //        pnLbImg.add(lbimg);

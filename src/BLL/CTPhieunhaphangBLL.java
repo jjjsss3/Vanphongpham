@@ -29,7 +29,7 @@ public class CTPhieunhaphangBLL {
                 SanphamDTO s=new SanphamDTO('\0',sp.getTensp(),sp.getMaloai(),sp.getSoluong(),sp.getDongia(),"");
                 sanphamBLL.addSanpham(s);
                 int masp=new SanphamDAL().getSPAdded();
-                new SanphamDAL().updateImg();
+                new SanphamDAL().updateImg(masp);
                 sp.setMasp(masp);
                 addCTHD(sp);
             }else

@@ -50,7 +50,6 @@ public class QL_Thongke extends JPanel {
     private int check=0;
     public static int z=0;
     public QL_Thongke() throws IOException, SQLException {
-        DatePicker dp1;
         if(conn==null){
             conn=con.getConn();
         }
@@ -71,6 +70,7 @@ public class QL_Thongke extends JPanel {
 //        }
 //    }
     private void initComponents() throws SQLException, IOException {
+
         if (QL_Sanpham.listDM.size() == 0) danhmucBLL.getListDanhmuc();
         list_nam =new ArrayList<>();
         list_nam = getYear();
@@ -161,7 +161,7 @@ public class QL_Thongke extends JPanel {
 
             }
         });
-        dp1=new DatePicker();
+        if(dp1==null) dp1=new DatePicker();
         txtDate1.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e){

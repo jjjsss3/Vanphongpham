@@ -267,17 +267,6 @@ public class ExportToPDF {
                         table.addCell(setCell(value,fontText,algin[j]));
                 }
             }
-//            for (ChitietHoadonDTO n: list) {
-//                count=0;
-//                table.addCell(setCell(String.valueOf(count++),fontText,algin[count++]));
-//                table.addCell(setCell(n.getMa(),fontText,algin[count++]));
-//                table.addCell(setCell(n.getHo()+" "+n.getTen(),fontText,algin[count++]));
-//                table.addCell(setCell(formatshow.format(n.getDob()),fontText,algin[count++]));
-//                table.addCell(setCell(n.getDiachi(),fontText,algin[count++]));
-//                table.addCell(setCell(formatshow.format(n.getNgayvaolam()),fontText,algin[count++]));
-//                table.addCell(setCell(n.getSdt(),fontText,algin[count++]));
-//                table.addCell(setCell(n.getTenchucvu(),fontText,algin[count++]));
-//            }
             doc.add(table);
             //footer
             doc.add(new Paragraph("\n"));
@@ -372,28 +361,6 @@ public class ExportToPDF {
                 table.addCell(setCell(model.getValueAt(i,3).toString(),fontText,algin[5]));
                 table.addCell(setCell(model.getValueAt(i,4).toString(),fontText,algin[6]));
             }
-//            for (CTPhieunhaphangDTO c:list) {
-//                count=0;
-//                table.addCell(setCell(String.valueOf(count++),fontText,algin[count++]));
-//                table.addCell(setCell(String.valueOf(c.getMasp()),fontText,algin[count++]));
-//                table.addCell(setCell(c.getTensp(),fontText,algin[count++]));
-//                table.addCell(setCell(String.valueOf(c.getMaloai()),fontText,algin[count++]));
-//                table.addCell(setCell(String.valueOf(c.getSoluong()),fontText,algin[count++]));
-//                table.addCell(setCell(currencyVN.format(c.getDongianhap()),fontText,algin[count++]));
-//                table.addCell(setCell(currencyVN.format(c.getSoluong()*c.getDongianhap()),fontText,algin[count++]));
-//
-//            }
-//            for (ChitietHoadonDTO n: list) {
-//                count=0;
-//                table.addCell(setCell(String.valueOf(count++),fontText,algin[count++]));
-//                table.addCell(setCell(n.getMa(),fontText,algin[count++]));
-//                table.addCell(setCell(n.getHo()+" "+n.getTen(),fontText,algin[count++]));
-//                table.addCell(setCell(formatshow.format(n.getDob()),fontText,algin[count++]));
-//                table.addCell(setCell(n.getDiachi(),fontText,algin[count++]));
-//                table.addCell(setCell(formatshow.format(n.getNgayvaolam()),fontText,algin[count++]));
-//                table.addCell(setCell(n.getSdt(),fontText,algin[count++]));
-//                table.addCell(setCell(n.getTenchucvu(),fontText,algin[count++]));
-//            }
             doc.add(table);
             //footer
             doc.add(new Paragraph("\n"));

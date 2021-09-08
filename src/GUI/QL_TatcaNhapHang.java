@@ -101,6 +101,7 @@ public class QL_TatcaNhapHang extends JPanel {
 
 
     private void initComponents() {
+
         listPNH=QL_NhapHang.listPNH;
         
         listPNH=QL_NhapHang.listPNH;
@@ -179,21 +180,21 @@ public class QL_TatcaNhapHang extends JPanel {
             }
         });
 
-        dp1=new DatePicker();
+        if(QL_Thongke.dp1==null )QL_Thongke.dp1=new DatePicker();
         QL_Thongke.txtDate1.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e){
                 QL_Thongke.z=0;
-                dp1.setVisible(true);
-                dp1.setLocation(300, 590);
+                QL_Thongke.dp1.setVisible(true);
+                QL_Thongke.dp1.setLocation(300, 590);
             }
         });
         QL_Thongke.txtDate2.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e){
                 QL_Thongke.z=1;
-                dp1.setVisible(true);
-                dp1.setLocation(300, 590);
+                QL_Thongke.dp1.setVisible(true);
+                QL_Thongke.dp1.setLocation(300, 590);
             }
         });
         cmbOrder.addActionListener (new ActionListener() {
@@ -397,7 +398,6 @@ public class QL_TatcaNhapHang extends JPanel {
     private JTextField txtTenncc=new TextFieldCustom("");
     private JTextField txtSDTncc=new TextFieldCustom("");
     private JTextField txtTennv=new TextFieldCustom("");
-    public static DatePicker dp1;
     private JComboBox<String> cmbOrder =new JComboBox<String>(new String[]{
             "Tổng tiền, tăng dần",
             "Tổng tiền, giảm dần",

@@ -17,24 +17,29 @@ public class SanphamBLL {
     public boolean addSanpham(SanphamDTO sanphamDTO ) throws SQLException {
         boolean result = sanphamDAL.addSanpham(sanphamDTO);
         if(result){
-            sanphamDAL.updateImg();
+            int masp=sanphamDAL.getSPAdded();
+            sanphamDAL.updateImg(masp);
+            sanphamDTO.setMasp(masp);
             QL_Sanpham.listSP.add(sanphamDTO);
         }
         return result;
     }
-    public boolean updateSanpham(SanphamDTO sanphamDTO, int masp, int index) {
-        if(masp==(sanphamDTO.getMasp())) {
+    public boolean addSanphamUndo(SanphamDTO sanphamDTO, int index ) throws SQLException {
+        boolean result = sanphamDAL.addSanphamUndo(sanphamDTO);
+        if(result){
+            QL_Sanpham.listSP.add(index, sanphamDTO);
+        }
+        return result;
+    }
+    public boolean updateSanpham(SanphamDTO sanphamDTO, int index) {
             if(sanphamDAL.updateSanpham(sanphamDTO)){
                 QL_Sanpham.listSP.set(index, sanphamDTO);
-
                 return true;}
-        }
         return false;
     }
 
-    public boolean delSanpham(int index) {
-        SanphamDTO sp= QL_Sanpham.listSP.get(index);
-        if(sanphamDAL.delSanpham(sp)) {
+    public boolean delSanpham(int masp,int index) {
+        if(sanphamDAL.delSanpham(masp)) {
             QL_Sanpham.listSP.remove(index);
             return true;
         }
@@ -43,20 +48,21 @@ public class SanphamBLL {
 
 
     public int undo(SanphamDTO temp, int index) throws SQLException {
-        if(index<QL_Sanpham.listSP.size()){
-            if(temp.getMasp()==(QL_Sanpham.listSP.get(index).getMasp())){
-                updateSanpham(temp,temp.getMasp(),index);
-                return 1;
-            }else{
-                sanphamDAL.addSanphamUndo(temp);
-                QL_Sanpham.listSP.add(index,temp);
-                return 2;
-            }
-        }else{
-            sanphamDAL.addSanphamUndo(temp);
-            QL_Sanpham.listSP.add(index,temp);
-            return 2;
-        }
+//        if(index<QL_Sanpham.listSP.size()){
+//            if(temp.getMasp()==(QL_Sanpham.listSP.get(index).getMasp())){
+//                updateSanpham(temp,temp.getMasp(),index);
+//                return 1;
+//            }else{
+//                sanphamDAL.addSanphamUndo(temp);
+//                QL_Sanpham.listSP.add(index,temp);
+//                return 2;
+//            }
+//        }else{
+//            sanphamDAL.addSanphamUndo(temp);
+//            QL_Sanpham.listSP.add(index,temp);
+//            return 2;
+//        }
+        return 0;
     }
     public ArrayList<SanphamDTO> search(SanphamDTO nv, String price, String quantity) {
         ArrayList<SanphamDTO >list=new ArrayList<>();
@@ -68,8 +74,7 @@ public class SanphamBLL {
         return list;
     }
     public boolean checkTensp(String tensp, ArrayList<SanphamDTO> list) {
-        for (SanphamDTO s: list
-        ) {
+        for (SanphamDTO s: list) {
             if(s.getTensp().replaceAll("\\s+", "").toLowerCase().equals(tensp.replaceAll("\\s+", "").toLowerCase()))
                 return false;
         }

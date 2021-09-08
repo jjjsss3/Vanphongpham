@@ -49,7 +49,7 @@ public class QL_TaoNhapHang extends JPanel{
     private CTPhieunhaphangBLL ctPhieunhaphangBLL=new CTPhieunhaphangBLL();
     private ChitietHoadonBLL chitietHoadonBLL=new ChitietHoadonBLL();
     private GiamGiaBLL giamGiaBLL=new GiamGiaBLL();
-    private Select_Nhacungcap mf;
+    private Select_Nhacungcap mf=null;
     private ArrayList<ChitietHoadonDTO> listOD=new ArrayList<>();
     private ArrayList<CTPhieunhaphangDTO> listCTPNH=new ArrayList<>();
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -146,6 +146,7 @@ public class QL_TaoNhapHang extends JPanel{
     }
 
     private void initComponents() throws IOException, URISyntaxException {
+
         gbc.fill = 1;
         gbc.insets = (new Insets(-10, 0, 20, 30));
 
@@ -745,12 +746,12 @@ public class QL_TaoNhapHang extends JPanel{
         }
         tblDSDM.setRowSelectionInterval(z,z);
 
-        URL url = getClass().getResource(sp.getAnhsp());
-        File f=new File(String.valueOf(url));
-        if(!f.exists())
+        File dir = new File(new File("").getAbsolutePath()+"\\src\\GUI\\"+sp.getAnhsp());
+        if(!dir.exists())
             img=ImageIO.read(this.getClass().getResource("images/sanpham/product.png"));
         else{
-            img = ImageIO.read(new File(url.getPath()));
+            URL url = getClass().getResource(sp.getAnhsp());
+            img = ImageIO.read(dir);
         }
         lbimg.setIcon(new ImageIcon(new ImageFit().fitimage(img, 140, 140)));
         txtTenspNhap.setText(sp.getTensp());

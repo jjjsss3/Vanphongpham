@@ -50,7 +50,7 @@ public class QL_TaoHoaDon extends JPanel{
     private HoaDonDAL hoaDonDAL=new HoaDonDAL();
     private ChitietHoadonBLL chitietHoadonBLL=new ChitietHoadonBLL();
     private GiamGiaBLL giamGiaBLL=new GiamGiaBLL();
-    private Select_Khachhang mf;
+    private Select_Khachhang mf=null;
     private ArrayList<ChitietHoadonDTO> listOD=new ArrayList<>();
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -664,12 +664,12 @@ public class QL_TaoHoaDon extends JPanel{
         }
         tblDSDM.setRowSelectionInterval(z,z);
 
-        URL url = getClass().getResource(sp.getAnhsp());
-        File f=new File(String.valueOf(url));
-        if(!f.exists())
+        File dir = new File(new File("").getAbsolutePath()+"\\src\\GUI\\"+sp.getAnhsp());
+        if(!dir.exists())
             img=ImageIO.read(this.getClass().getResource("images/sanpham/product.png"));
         else{
-            img = ImageIO.read(new File(url.getPath()));
+            URL url = getClass().getResource(sp.getAnhsp());
+            img = ImageIO.read(dir);
         }
         lbimg.setIcon(new ImageIcon(new ImageFit().fitimage(img, 200, 200)));
     }

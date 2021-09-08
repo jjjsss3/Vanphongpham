@@ -43,13 +43,13 @@ public class SanphamDAL {
     }
 
     public boolean addSanpham(SanphamDTO s) throws SQLException {
-        String sql="INSERT INTO `sanpham` (`tensp`, `maloai`, `dongia`, `soluong`,`anh` ) VALUES (?,?,?,?,?)";
+        String sql="INSERT INTO `sanpham` (`tensp`, `maloai`, `dongia`, `soluong`, `anh` ) VALUES (?,?,?,?,?)";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1,s.getTensp());
             ps.setInt(2,s.getMaloai());
             ps.setLong(3, s.getDongia());
             ps.setInt(4,s.getSoluong());
-            ps.setString(5,s.getAnhsp());
+            ps.setString(5,"");
             ps.execute();
 //        updateImg(s.getAnhsp());
         return true;
@@ -68,8 +68,7 @@ public class SanphamDAL {
         }catch (Exception e){}
         return true;
     }
-    public boolean updateImg() throws SQLException {
-        int masp=getSPAdded();
+    public boolean updateImg(int masp) throws SQLException {
          String sql="UPDATE sanpham set anh=? where masp=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1,"images/sanpham/"+String.valueOf(masp)+".png");
@@ -114,11 +113,11 @@ public class SanphamDAL {
         }catch (Exception e){}
         return false;
     }
-    public boolean delSanpham(SanphamDTO s){
+    public boolean delSanpham(int masp){
         String sql="DELETE FROM `sanpham` WHERE `masp`=?";
         try {
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1,s.getMasp());
+            ps.setInt(1,masp);
             ps.execute();
         }catch (Exception e){}
         return true;

@@ -71,8 +71,8 @@ public class DatePicker extends JFrame {
                     else QL_Thongke.txtDate2.setText(date);
                 }
             }
-            setVisible(false);
-//            dispose();
+//            setVisible(false);
+            dispose();
         });
     }
     public SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
