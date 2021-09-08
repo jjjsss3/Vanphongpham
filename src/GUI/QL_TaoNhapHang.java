@@ -630,7 +630,7 @@ public class QL_TaoNhapHang extends JPanel{
         Date now=Calendar.getInstance().getTime();
         for (GiamGiaDTO gg: QL_Giamgia.listGG) {
             if(gg.getNgaybd().compareTo(now)<0&&now.compareTo(gg.getNgaykt())<0){
-                for (ChitietGiamgiaDTO c: QL_Giamgia.listCTGG) {
+                for (ChitietGiamgiaDTO c: QL_Giamgia.listAllCTGG) {
                     if(c.getMasp()==masp) return c.getPhantramkm();
                 }
             }

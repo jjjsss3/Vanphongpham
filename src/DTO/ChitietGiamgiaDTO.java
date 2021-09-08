@@ -10,6 +10,10 @@ public class ChitietGiamgiaDTO {
         this.phantramkm = phantramkm;
         this.masp = masp;
     }
+    public ChitietGiamgiaDTO(int masp,int phantramkm) {
+        this.phantramkm = phantramkm;
+        this.masp = masp;
+    }
 
     public ChitietGiamgiaDTO() {
 

@@ -349,8 +349,8 @@ public class QL_Sanpham extends JPanel{
                 modelSP.removeRow(i);
                 indextableundo=i;
 
-                for (int j = index; j < modelSP.getRowCount(); j++) {
-                    modelSP.setValueAt(j + 1, j, 0);
+                for (int j = i; j < modelSP.getRowCount(); j++) {
+                    modelSP.setValueAt(j+1, j, 0);
                 }
                 JOptionPane.showMessageDialog(null, "Xóa thành công!");
                 checkundo = 2;
@@ -392,6 +392,9 @@ public class QL_Sanpham extends JPanel{
                     sanphamBLL.addSanphamUndo(sptemp,indexdelundo);
                     listsearchsp.add(indextableundo, sptemp);
                     addRow(sptemp,indexdelundo,modelSP);
+                    for (int k = indexdelundo; k < modelSP.getRowCount(); k++) {
+                        modelSP.setValueAt(k+1, k, 0);
+                    }
                 }
             }
             JOptionPane.showMessageDialog(null,"Hoàn tác từ thành công");

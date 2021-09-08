@@ -15,6 +15,13 @@ public class GiamGiaDTO {
         this.ngaykt = ngaykt;
     }
 
+    public GiamGiaDTO(String makm, String tenkm, Date ngaybd, Date ngaykt) {
+        this.makm = makm;
+        this.tenkm = tenkm;
+        this.ngaybd = ngaybd;
+        this.ngaykt = ngaykt;
+    }
+
     @Override
     public String toString() {
         return "KhuyenMaiDTO{" +

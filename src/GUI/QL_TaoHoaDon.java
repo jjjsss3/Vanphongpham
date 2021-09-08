@@ -1,14 +1,12 @@
 package GUI;
 
 import BLL.*;
-import DAL.ChitietHoadonDAL;
 import DAL.DanhmucDAL;
 import DAL.HoaDonDAL;
 import DAL.SanphamDAL;
 import DTO.*;
 import GUI.Components.*;
 import com.itextpdf.text.DocumentException;
-import utils.CheckInput;
 import utils.ExportToPDF;
 import utils.ImageFit;
 import utils.NewColor;
@@ -26,7 +24,6 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -560,7 +557,7 @@ public class QL_TaoHoaDon extends JPanel{
         Date now=Calendar.getInstance().getTime();
         for (GiamGiaDTO gg: QL_Giamgia.listGG) {
             if(gg.getNgaybd().compareTo(now)<0&&now.compareTo(gg.getNgaykt())<0){
-                for (ChitietGiamgiaDTO c: QL_Giamgia.listCTGG) {
+                for (ChitietGiamgiaDTO c: QL_Giamgia.listAllCTGG) {
                     if(c.getMasp()==masp) return c.getPhantramkm();
                 }
             }

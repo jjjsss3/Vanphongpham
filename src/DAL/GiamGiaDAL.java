@@ -1,9 +1,7 @@
 package DAL;
 
 import DTO.*;
-import GUI.QL_Chung;
 import GUI.QL_Giamgia;
-import GUI.QL_Sanpham;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -53,14 +51,64 @@ public class GiamGiaDAL {
                 gg.setMasp(rs.getInt("masp"));
                 gg.setPhantramkm(rs.getInt("phantramkm"));
 
-                QL_Giamgia.listCTGG.add(gg);
+                QL_Giamgia.listAllCTGG.add(gg);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if(QL_Giamgia.listCTGG.size()!=0) return true;
+        if(QL_Giamgia.listAllCTGG.size()!=0) return true;
         return false;
     }
-
-
+    public boolean addKM(GiamGiaDTO g) throws SQLException {
+        String sql="INSERT INTO khuyenmai VALUES(?,?,?,?)";
+        PreparedStatement ps=conn.prepareStatement(sql);
+        ps.setString(1,g.getMakm());
+        ps.setString(2,g.getTenkm());
+        ps.setString(3,formatter.format(g.getNgaybd()));
+        ps.setString(4,formatter.format(g.getNgaykt()));
+        return ps.executeUpdate()>0;
+    }
+    public boolean addCTKM(ChitietGiamgiaDTO c) throws SQLException {
+        String sql="INSERT INTO chitietkm VALUES(?,?,?)";
+        PreparedStatement ps=conn.prepareStatement(sql);
+        ps.setString(1,c.getMakm());
+        ps.setInt(2,c.getMasp());
+        ps.setInt(3,c.getPhantramkm());
+        return ps.execute();
+    }
+    public boolean delCTKM(String makm) throws SQLException {
+        String sql="DELETE from chitietkm where makm=?";
+        PreparedStatement ps=conn.prepareStatement(sql);
+        ps.setString(1,makm);
+        return ps.execute();
+    }
+    public boolean updateKM(GiamGiaDTO g) throws SQLException {
+        String sql="UPDATE khuyenmai set makm=?, tenkm=? where makm=?";
+        PreparedStatement ps=conn.prepareStatement(sql);
+        ps.setString(1,g.getMakm());
+        ps.setString(2,g.getTenkm());
+        ps.setString(3,g.getMakm());
+        return ps.executeUpdate()>0;
+    }
+    public boolean updateCTKM(ChitietGiamgiaDTO g) throws SQLException {
+        String sql="UPDATE chitietkm SET phantramkm=? WHERE masp=? and makm=?";
+        PreparedStatement ps=conn.prepareStatement(sql);
+        ps.setInt(1,g.getPhantramkm());
+        ps.setInt(2,g.getMasp());
+        ps.setString(3,g.getMakm());
+        return ps.executeUpdate()>0;
+    }
+    public boolean delKM(String makm) throws SQLException {
+        String sql="DELETE from khuyenmai where makm=?";
+        PreparedStatement ps=conn.prepareStatement(sql);
+        ps.setString(1,makm);
+        return ps.executeUpdate()>0;
+    }
+    public boolean delCTKM(ChitietGiamgiaDTO g) throws SQLException {
+        String sql="DELETE from chitietkm where masp=? and makm=?";
+        PreparedStatement ps=conn.prepareStatement(sql);
+        ps.setInt(1,g.getMasp());
+        ps.setString(2,g.getMakm());
+        return ps.executeUpdate()>0;
+    }
 }

@@ -224,6 +224,15 @@ public class QL_Chung extends JFrame {
             if (tenquyen.equals("nhacungcap")&&trangthai==1) {
                     pnCenter.add(new QL_Nhacungcap());
             }
+                if (tenquyen.equals("khuyenmai")&&trangthai==1) {
+                    try {
+                        pnCenter.add(new QL_Giamgia());
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    } catch (URISyntaxException ex) {
+                        ex.printStackTrace();
+                    }
+                }
             if (tenquyen.equals("nhaphang")&&trangthai==1) {
                 try {
                     pnCenter.add(new QL_NhapHang());

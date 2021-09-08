@@ -39,7 +39,7 @@ public class DatePicker extends JFrame {
         add(btnGet,BorderLayout.SOUTH);
         btnGet.addActionListener(e -> {
             Date d = (Date) datePanel.getModel().getValue();
-            Date now = Date.from(lcd.atStartOfDay(ZoneId.systemDefault()).toInstant());
+//            Date now = Date.from(lcd.atStartOfDay(ZoneId.systemDefault()).toInstant());
             date = new FormaterDate().formatter.format(d);
             if(QL_Thongke.z==0) {
                 Date check = null;
@@ -52,8 +52,7 @@ public class DatePicker extends JFrame {
                 if (!QL_Thongke.txtDate2.getText().equals("") && d.after(check))
                     QL_Thongke.txtDate1.setText(QL_Thongke.txtDate2.getText());
                 else {
-                    if (d.after(now)) QL_Thongke.txtDate1.setText(new FormaterDate().formatter.format(now));
-                    else QL_Thongke.txtDate1.setText(date);
+                    QL_Thongke.txtDate1.setText(date);
                 }
             }
             else if(QL_Thongke.z==1) {
@@ -67,8 +66,7 @@ public class DatePicker extends JFrame {
                 if (!QL_Thongke.txtDate1.getText().equals("") && check.after(d))
                     QL_Thongke.txtDate2.setText(QL_Thongke.txtDate1.getText());
                 else {
-                    if (d.after(now)) QL_Thongke.txtDate2.setText(new FormaterDate().formatter.format(now));
-                    else QL_Thongke.txtDate2.setText(date);
+QL_Thongke.txtDate2.setText(date);
                 }
             }
 //            setVisible(false);
@@ -101,6 +99,6 @@ public class DatePicker extends JFrame {
             return "";
         }
     }
-    private LocalDate lcd=LocalDate.now();
+//    private LocalDate lcd=LocalDate.now();
 
 }
