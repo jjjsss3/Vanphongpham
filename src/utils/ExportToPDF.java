@@ -109,13 +109,21 @@ public class ExportToPDF {
         }
 
     }
-    public void exportToPDFThongKe(DefaultTableModel model, String timestart, String timeend, String order, String kind,String sumM, String sumA){
+    public void exportToPDFThongKe(DefaultTableModel model, String timestart, String timeend, String order, String kind,String sumM, String sumA, int check){
         try {
             //close if running
-            new ActionPDF().closeFile();
             //intialize
-            File f=new File("");
-            String fileName = f.getAbsolutePath()+"\\src\\File\\Thongkesanpham.pdf";
+            String ngay=new SimpleDateFormat("dd").format(Calendar.getInstance().getTime());
+            String thang=new SimpleDateFormat("MM").format(Calendar.getInstance().getTime());
+            String nam=new SimpleDateFormat("yyyy").format(Calendar.getInstance().getTime());
+            String timefolder=nam+"-"+thang+"-"+ngay;
+
+            File f = new File("");
+            File dir = new File(f.getAbsolutePath()+ "\\src\\File\\Thongke\\"+timefolder);
+            dir.mkdirs();
+            String nameHD="THONGKE"+check+".pdf";
+            String fileName = dir.getPath()+"\\"+nameHD;
+
             Document doc = new Document();
             doc.setPageSize(PageSize.A4.rotate());
             FileOutputStream file = new FileOutputStream(new String(fileName.getBytes("UTF-8"),"UTF-8"));

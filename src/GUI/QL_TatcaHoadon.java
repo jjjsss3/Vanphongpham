@@ -2,12 +2,15 @@ package GUI;
 
 import BLL.ChitietHoadonBLL;
 import BLL.HoaDonBLL;
+import BLL.KhachhangBLL;
 import BLL.SanphamBLL;
 import DTO.ChitietHoadonDTO;
 import DTO.HoaDonDTO;
+import DTO.KhachhangDTO;
 import DTO.SanphamDTO;
 import GUI.Components.DatePicker;
 import GUI.Components.LabelCustom;
+import GUI.Components.TextFieldCustom;
 import utils.NewColor;
 
 import javax.swing.*;
@@ -101,7 +104,13 @@ public class QL_TatcaHoadon extends JPanel {
         return "";
     }
 
-
+    private KhachhangDTO searchKH(String makh){
+        for (KhachhangDTO k:QL_Khachhang.listKH
+             ) {
+            if(k.getMa().equals(String.valueOf(makh))) return k;
+        }
+        return null;
+    }
     private void initComponents() {
         listHD=QL_HoaDon.listHD;
         QL_Thongke.z=0;
@@ -136,6 +145,11 @@ public class QL_TatcaHoadon extends JPanel {
                 listSPCTSP=new ArrayList<>();
                 listSPCTSP=getSP(mahd);
                 showTableCTHD(modelCTHD,listSPCTSP);
+                if(QL_Khachhang.listKH.size()==0) new KhachhangBLL().getListKhachhang();
+                KhachhangDTO k=searchKH(listHD.get(tblHD.getSelectedRow()).getMakh());
+                txtTenkh.setText(k.getHo()+" "+k.getTen());
+                txtSDTkh.setText(k.getSdt());
+                txtdiachi.setText(k.getDiachi());
             }
         });
 
@@ -159,18 +173,8 @@ public class QL_TatcaHoadon extends JPanel {
             column.setPreferredWidth(width);
         }
         jScrollPaneCTHD = new JScrollPane(tblCTHD);
-//        showTableCTHD(modelCTHD,QL_HoaDon.listCTHD);
         tblCTHD.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
-//                SanphamDTO sp=new SanphamDTO();
-//                { sp= listsearchsp.get(tblHD.getSelectedRow());}
-//
-//                try {
-//                    showInputSP(sp);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-
             }
         });
 
@@ -234,6 +238,15 @@ public class QL_TatcaHoadon extends JPanel {
         pnTopLeftFilterDate.add(lbDate1);
         pnTopLeftFilterDate.add(QL_Thongke.txtDate2);
 
+        pnTopRight.add(pnTopRightInfo);
+        pnTopRightInfo.setLayout(new GridLayout(6,1));
+        pnTopRightInfo.add(lbTenkh);
+        pnTopRightInfo.add(txtTenkh);
+        pnTopRightInfo.add(lbSDT);
+        pnTopRightInfo.add(txtSDTkh);
+        pnTopRightInfo.add(lbDiachi);
+        pnTopRightInfo.add(txtdiachi);
+
         pnBottom.setLayout(new BoxLayout(pnBottom, BoxLayout.X_AXIS));
         pnBottom.add(pnBottomLeft);
         pnBottom.add(pnBottomRight);
@@ -252,6 +265,7 @@ public class QL_TatcaHoadon extends JPanel {
         pnBottom.setPreferredSize(new Dimension(1620,520));
         pnTopLeft.setPreferredSize(new Dimension(1000,450));
         pnTopRight.setPreferredSize(new Dimension(620,450));
+        pnTopRightInfo.setPreferredSize(new Dimension(550, 300));
         pnTopLeftFilter.setPreferredSize(new Dimension(950,55));
         pnBottomLeft.setPreferredSize(new Dimension(1000,450));
         pnBottomRight.setPreferredSize(new Dimension(620,450));
@@ -260,13 +274,14 @@ public class QL_TatcaHoadon extends JPanel {
         pnTop.setBackground(NewColor.background);
         pnBottom.setBackground(NewColor.background);
         pnTopLeft.setBackground(NewColor.background);
-//        pnTopRight.setBackground(NewColor.background);
+        pnTopRight.setBackground(NewColor.background);
         pnBottomLeft.setBackground(NewColor.background);
         pnBottomRight.setBackground(NewColor.background);
         pnTopLeftFilterDate.setBackground(NewColor.background);
         cmbOrder.setBackground(Color.WHITE);
         pnTopLeftFilter.setBackground(NewColor.background);
         pnTopLeftFilterDate.setBackground(NewColor.background);
+        pnTopRightInfo.setBackground(NewColor.background);
         pnSpace.setBackground(NewColor.background);
         btnAllOrder.setBackground(NewColor.background);
 
@@ -366,4 +381,11 @@ public class QL_TatcaHoadon extends JPanel {
             "Tổng tiền, giảm dần",
     });
     private JButton btnAllOrder=new JButton("Xem tất cả");
+    private JLabel lbTenkh=new LabelCustom("Tên khách hàng");
+    private JTextField txtTenkh=new TextFieldCustom("");
+    private JLabel lbSDT=new LabelCustom("Số điện thoại khách hàng:");
+    private JTextField txtSDTkh=new TextFieldCustom("");
+    private JLabel lbDiachi=new LabelCustom("Địa chỉ khách hàng");
+    private JTextField txtdiachi=new TextFieldCustom("");
+    private JPanel pnTopRightInfo=new JPanel();
 }

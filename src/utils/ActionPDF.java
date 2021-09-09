@@ -11,7 +11,6 @@ public class ActionPDF {
             if (file.exists()) {
                 Process p = Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + filePath);
                 p.waitFor();
-
             }
         }catch (Exception e){
 

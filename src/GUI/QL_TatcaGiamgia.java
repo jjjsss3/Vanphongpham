@@ -273,12 +273,12 @@ public class QL_TatcaGiamgia extends JPanel {
         else {
             int res = JOptionPane.showConfirmDialog(null, "Bạn muốn xóa, chắc chắn chứ?", "Message", JOptionPane.YES_NO_OPTION);
             if (res == JOptionPane.YES_OPTION) {
-                int i=tblDSGG.getSelectedRow();
-                giamGiaBLL.delKM(QL_Giamgia.listGG.get(i).getMakm(), i);
+                int j=tblDSGG.getSelectedRow();
+                giamGiaBLL.delKM(QL_Giamgia.listGG.get(j).getMakm(), j);
                 modelCTGG.setNumRows(0);
-                modelDSGG.removeRow(i);
-                for (int j = i; j < modelDSGG.getRowCount(); j++) {
-                    modelDSGG.setValueAt(j + 1, j, 0);
+                modelDSGG.removeRow(j);
+                for (int k = j; j < modelDSGG.getRowCount(); k++) {
+                    modelDSGG.setValueAt(k + 1, k, 0);
                 }
             }
         }

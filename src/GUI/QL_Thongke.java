@@ -272,8 +272,9 @@ public class QL_Thongke extends JPanel {
 
     private void btnPDFActionPerformed(ActionEvent actionEvent) throws IOException, DocumentException {
         if(modelSp.getRowCount()>0) {
+            check++;
             new ExportToPDF().exportToPDFThongKe(modelSp, txtDate1.getText(), txtDate2.getText(),
-                    cmbOrder.getSelectedItem().toString(), cmbLoai.getSelectedItem().toString(),txtTongTien.getText(),txtTongSoluong.getText());
+                    cmbOrder.getSelectedItem().toString(), cmbLoai.getSelectedItem().toString(),txtTongTien.getText(),txtTongSoluong.getText(),check);
         }else JOptionPane.showMessageDialog(this, "Không có dữ liệu", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
     }
 
