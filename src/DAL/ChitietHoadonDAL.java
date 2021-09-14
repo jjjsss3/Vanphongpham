@@ -33,7 +33,6 @@ public class ChitietHoadonDAL {
                 sp.setMasp(rs.getInt("masp"));
                 sp.setSoluong(rs.getInt("soluong"));
                 sp.setGiamgia(rs.getLong("khuyenmai"));
-                sp.setDongia(rs.getLong("dongia"));
                 QL_HoaDon.listCTHD.add(sp);
             }
         } catch (Exception e) {
