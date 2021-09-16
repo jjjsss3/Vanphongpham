@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.0
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 14, 2021 at 11:04 AM
--- Server version: 10.4.18-MariaDB
--- PHP Version: 8.0.5
+-- Generation Time: Sep 16, 2021 at 06:56 AM
+-- Server version: 10.4.21-MariaDB
+-- PHP Version: 8.0.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -204,7 +204,10 @@ INSERT INTO `chitiethoadon` (`stt`, `mahd`, `masp`, `soluong`, `khuyenmai`, `tha
 (161, 54, 38, 41, '0', '0'),
 (162, 55, 39, 42, '0', '0'),
 (163, 55, 40, 43, '0', '0'),
-(164, 55, 41, 44, '0', '0');
+(164, 55, 41, 44, '0', '0'),
+(466, 57, 2, 50, '0', '5000000'),
+(467, 57, 3, 50, '0', '3750000'),
+(468, 57, 9, 100, '0', '3000000');
 
 -- --------------------------------------------------------
 
@@ -213,10 +216,31 @@ INSERT INTO `chitiethoadon` (`stt`, `mahd`, `masp`, `soluong`, `khuyenmai`, `tha
 --
 
 CREATE TABLE `chitietkm` (
-  `makm` int(11) NOT NULL,
+  `makm` varchar(20) NOT NULL,
   `masp` int(11) NOT NULL,
   `phantramkm` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `chitietkm`
+--
+
+INSERT INTO `chitietkm` (`makm`, `masp`, `phantramkm`) VALUES
+('trungthu', 7, 10),
+('trungthu', 9, 10),
+('trungthu', 6, 10),
+('trungthu', 5, 10),
+('trungthu', 4, 10),
+('trungthu', 3, 10),
+('trungthu', 2, 10),
+('namhocmoi', 56, 30),
+('namhocmoi', 58, 30),
+('namhocmoi', 60, 30),
+('namhocmoi', 55, 30),
+('namhocmoi', 54, 30),
+('namhocmoi', 53, 30),
+('namhocmoi', 52, 30),
+('namhocmoi', 51, 30);
 
 -- --------------------------------------------------------
 
@@ -226,11 +250,29 @@ CREATE TABLE `chitietkm` (
 
 CREATE TABLE `chitietpnh` (
   `mapnh` int(11) NOT NULL,
-  `mahh` int(11) NOT NULL,
+  `masp` int(11) NOT NULL,
   `soluong` int(11) NOT NULL,
   `dongianhap` decimal(10,0) NOT NULL,
   `thanhtien` decimal(10,0) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `chitietpnh`
+--
+
+INSERT INTO `chitietpnh` (`mapnh`, `masp`, `soluong`, `dongianhap`, `thanhtien`) VALUES
+(0, 12, 100, '30000', '3000000'),
+(0, 11, 100, '30000', '3000000'),
+(0, 10, 100, '30000', '3000000'),
+(0, 9, 100, '30000', '3000000'),
+(0, 7, 200, '30000', '6000000'),
+(0, 6, 100, '30000', '3000000'),
+(0, 5, 100, '30000', '3000000'),
+(0, 4, 100, '30000', '3000000'),
+(0, 3, 100, '30000', '3000000'),
+(0, 2, 100, '30000', '3000000'),
+(0, 45, 10000, '500000', '5000000000'),
+(1, 60, 100, '500000', '50000000');
 
 -- --------------------------------------------------------
 
@@ -329,7 +371,8 @@ INSERT INTO `hoadon` (`mahd`, `manv`, `makh`, `ngay`, `tongtien`, `tongkm`, `gia
 (52, 'nv01', 12, '2020-02-12', '610000', '10000', '0', '1865000'),
 (53, 'nv01', 13, '2020-01-12', '620000', '10000', '0', '4685000'),
 (54, 'nv01', 14, '2019-12-12', '630000', '10000', '0', '9785000'),
-(55, 'nv01', 15, '2019-11-12', '640000', '10000', '0', '9465000');
+(55, 'nv01', 15, '2019-11-12', '640000', '10000', '0', '9465000'),
+(57, 'a', 5, '2021-09-16', '5000000', '0', '0', '5000000');
 
 -- --------------------------------------------------------
 
@@ -401,11 +444,19 @@ INSERT INTO `khachhang` (`makh`, `hokh`, `tenkh`, `gioitinh`, `ngaysinh`, `diach
 --
 
 CREATE TABLE `khuyenmai` (
-  `makm` int(11) NOT NULL,
-  `tenkm` int(11) NOT NULL,
+  `makm` varchar(20) NOT NULL,
+  `tenkm` varchar(100) NOT NULL,
   `ngaybd` date NOT NULL,
   `ngaykt` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `khuyenmai`
+--
+
+INSERT INTO `khuyenmai` (`makm`, `tenkm`, `ngaybd`, `ngaykt`) VALUES
+('namhocmoi', 'Mừng khai giảng năm học 2021-2022', '2021-09-15', '2021-09-30'),
+('trungthu', 'Trung thu', '2021-09-01', '2021-09-30');
 
 -- --------------------------------------------------------
 
@@ -560,11 +611,18 @@ INSERT INTO `phanquyen` (`stt`, `machucvu`, `maquyen`, `trangthai`) VALUES
 
 CREATE TABLE `phieunhaphang` (
   `mapnh` int(11) NOT NULL,
-  `manv` int(11) NOT NULL,
+  `manv` varchar(20) NOT NULL,
   `ngay` date NOT NULL,
   `mancc` int(11) NOT NULL,
   `tongtien` decimal(10,0) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `phieunhaphang`
+--
+
+INSERT INTO `phieunhaphang` (`mapnh`, `manv`, `ngay`, `mancc`, `tongtien`) VALUES
+(1, 'a', '2021-09-16', 6, '50000000');
 
 -- --------------------------------------------------------
 
@@ -614,17 +672,17 @@ CREATE TABLE `sanpham` (
 --
 
 INSERT INTO `sanpham` (`masp`, `tensp`, `maloai`, `anh`, `dongia`, `soluong`, `mancc`) VALUES
-(2, 'Bút gel xóa được Baoke PC3188 ', 1, 'images/sanpham/2.png', '25000', 90, 1),
-(3, 'Bút nước Aihao Tím', 1, 'images/sanpham/3.png', '15000', 80, 1),
-(4, 'Ruột bút Uni Ball Pen Refills SXR-7', 1, 'images/sanpham/4.png', '10000', 70, 1),
-(5, 'Mực dấu chìm Suremark', 1, 'images/sanpham/5.png', '30000', 60, 1),
-(6, 'Bình mực SHINY INK 100ml', 1, 'images/sanpham/6.png', '35000', 50, 1),
-(7, 'Bút bi Zebra 301 - 0.7mm', 1, 'images/sanpham/7.png', '10000', 40, 2),
+(2, 'Bút gel xóa được Baoke PC3188 ', 1, 'images/sanpham/2.png', '25000', 140, 1),
+(3, 'Bút nước Aihao Tím', 1, 'images/sanpham/3.png', '15000', 130, 1),
+(4, 'Ruột bút Uni Ball Pen Refills SXR-7', 1, 'images/sanpham/4.png', '10000', 170, 1),
+(5, 'Mực dấu chìm Suremark', 1, 'images/sanpham/5.png', '30000', 160, 1),
+(6, 'Bình mực SHINY INK 100ml', 1, 'images/sanpham/6.png', '35000', 150, 1),
+(7, 'Bút bi Zebra 301 - 0.7mm', 1, 'images/sanpham/7.png', '10000', 240, 2),
 (8, 'Mực lông dầu HS đen', 1, 'images/sanpham/8.png', '15000', 30, 2),
 (9, 'Băng keo cách điện NANO', 2, 'images/sanpham/9.png', '30000', 100, 2),
-(10, 'Keo trám khe silicone - SILIRUB AC - 280ml', 2, 'images/sanpham/10.png', '25000', 30, 2),
-(11, 'Đạn nhựa súng bắn mác 75mm', 2, 'images/sanpham/11.png', '100000', 35, 2),
-(12, 'Kéo Cắt Thùng', 2, 'images/sanpham/12.png', '25000', 44, 2),
+(10, 'Keo trám khe silicone - SILIRUB AC - 280ml', 2, 'images/sanpham/10.png', '25000', 130, 2),
+(11, 'Đạn nhựa súng bắn mác 75mm', 2, 'images/sanpham/11.png', '100000', 135, 2),
+(12, 'Kéo Cắt Thùng', 2, 'images/sanpham/12.png', '25000', 144, 2),
 (13, 'Kéo Thiên Long SC020 - 20cm', 2, 'images/sanpham/13.png', '20000', 17, 3),
 (14, 'Băng keo bấm giá ', 2, 'images/sanpham/14.png', '80000', 100, 3),
 (15, 'Màng cuốn PE (60cm, 3.1kg)', 2, 'images/sanpham/15.png', '50000', 23, 3),
@@ -657,7 +715,7 @@ INSERT INTO `sanpham` (`masp`, `tensp`, `maloai`, `anh`, `dongia`, `soluong`, `m
 (42, 'HUYỀN TRÂN CÔNG CHÚA', 5, 'images/sanpham/42.png', '70000', 10, 7),
 (43, 'Cuộc chiến tranh bắt buộc', 5, 'images/sanpham/43.png', '95000', 11, 7),
 (44, 'Một nửa đàn ông là đàn bà', 5, 'images/sanpham/44.png', '60000', 23, 7),
-(45, 'Máy tính Casio MX 12B', 6, 'images/sanpham/45.png', '350000', 1, 8),
+(45, 'Máy tính Casio MX 12B', 6, 'images/sanpham/45.png', '350000', 10001, 8),
 (46, 'Máy tính Casio MX 120B', 6, 'images/sanpham/46.png', '400000', 10, 8),
 (47, 'Máy tính Casio FX-570ES Plus', 6, 'images/sanpham/47.png', '500000', 10, 8),
 (48, 'Máy tính Casio DC-12M', 6, 'images/sanpham/48.png', '300000', 15, 8),
@@ -671,7 +729,7 @@ INSERT INTO `sanpham` (`masp`, `tensp`, `maloai`, `anh`, `dongia`, `soluong`, `m
 (56, 'Pin sky a860 7500m', 7, 'images/sanpham/56.png', '550000', 10, 1),
 (57, 'Pin sky a840 7300m', 7, 'images/sanpham/57.png', '450000', 23, 1),
 (58, 'Pin Sky A840', 7, 'images/sanpham/58.png', '550000', 100, 1),
-(60, 'Pin sky a760-a770 6800m', 7, 'images/sanpham/60.png', '350000', 21, 1);
+(60, 'Pin sky a760-a770 6800m', 7, 'images/sanpham/60.png', '350000', 121, 1);
 
 --
 -- Indexes for dumped tables
@@ -757,7 +815,7 @@ ALTER TABLE `sanpham`
 -- AUTO_INCREMENT for table `chitiethoadon`
 --
 ALTER TABLE `chitiethoadon`
-  MODIFY `stt` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=466;
+  MODIFY `stt` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=469;
 
 --
 -- AUTO_INCREMENT for table `chucvu`
@@ -769,19 +827,13 @@ ALTER TABLE `chucvu`
 -- AUTO_INCREMENT for table `hoadon`
 --
 ALTER TABLE `hoadon`
-  MODIFY `mahd` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `mahd` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
 
 --
 -- AUTO_INCREMENT for table `khachhang`
 --
 ALTER TABLE `khachhang`
   MODIFY `makh` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
-
---
--- AUTO_INCREMENT for table `khuyenmai`
---
-ALTER TABLE `khuyenmai`
-  MODIFY `makm` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `loaihang`
@@ -805,7 +857,7 @@ ALTER TABLE `phanquyen`
 -- AUTO_INCREMENT for table `phieunhaphang`
 --
 ALTER TABLE `phieunhaphang`
-  MODIFY `mapnh` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `mapnh` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `quyen`
